@@ -15,7 +15,7 @@ import notifyFactory from "./extensions-builtin/notify.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-/** pi SDK 包根目录（2026-10-12 开源改造：SDK 已进 dependencies 本地化，取代写死的 D:/nodejs 全局路径）。
+/** pi SDK 包根目录（2026-10-12 开源改造：SDK 已进 dependencies 本地化，取代以往写死的全局 node 安装路径）。
  *  __dirname 直拼 node_modules 相对路径——零解析器依赖（import.meta.resolve 在 Electron ESM 主进程
  *  不可靠、createRequire().resolve 被 pi 的非法数组形态 exports 拒绝，两路皆实测翻车）；
  *  开发态与 electron-builder asar 打包态布局一致（main.js 与 node_modules 同级）均成立 */

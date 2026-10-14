@@ -1,11 +1,14 @@
 /**
  * 右栏项目结构树验证（2026-10-06 owner 需求：文件区改多工作区结构树，点项目切换工作区）
  * ① pane 标题「项目」且组数=工作区数 ② 活跃组朱砂高亮 + 初始自动展开一层
- * ③ 箭头展开任一项目目录子树 ④ 点项目名：有会话=切换（cwd 变、无通知条、左栏同步）；无会话=不自动新建+右键「在此开新会话」（2026-10-06 owner 拍板）；子目录右键开新会话=自动登记工作区（用 E:\pi-gui\renderer 确定性验证）
+ * ③ 箭头展开任一项目目录子树 ④ 点项目名：有会话=切换（cwd 变、无通知条、左栏同步）；无会话=不自动新建+右键「在此开新会话」（2026-10-06 owner 拍板）；子目录右键开新会话=自动登记工作区（用 <repo-root>\renderer 确定性验证）
  * ⑤ 切换只刷新高亮：已展开状态保留 ⑥ 移除工作区后树同步刷新
  * 重建触发一律走真实 UI 点击（组头/自由区+）；全程不发 prompt，零 token。
  * 用法：PI_GUI_CDP_PORT=9225 [PI_GUI_USER_DATA=...] 启动测试实例后 node verify-projtree.mjs 9225
  */
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PORT = process.argv[2] || "9225";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -70,7 +73,7 @@ const CHECK = String.raw`
 
   // 保证 ≥2 个工作区（design/docs 真实存在；会话存 ~/.pi 侧，不污染仓库）
   R.addedIds = [];
-  for (const dir of ["E:\\pi-gui\\design", "E:\\pi-gui\\docs", "E:\\pi-gui"]) {
+  for (const dir of ["__REPO_ROOT__\\design", "__REPO_ROOT__\\docs", "__REPO_ROOT__"]) {
     if (!cfg.workspaces.some((w) => w.cwd.toLowerCase() === dir.toLowerCase())) {
       const c2 = await window.pi.wsAdd(dir);
       const nw = c2.workspaces.find((w) => w.cwd.toLowerCase() === dir.toLowerCase());
@@ -85,10 +88,10 @@ const CHECK = String.raw`
   }
   R.rebuildCount = groups().length === cfg.workspaces.length && groups().length >= 2;
 
-  // ② 切到 A：断言高亮/颜色/自动展开。A 确定性选 E:\pi-gui 根（子目录多，tree-node 断言需要）——
+  // ② 切到 A：断言高亮/颜色/自动展开。A 确定性选仓库根（子目录多，tree-node 断言需要）——
   // 不能再 groups()[0]：TEST_CWD 钩子（bdf97b2）把初始会话 cwd 改到钩子目录，init 会自动把它登记为首个
   // 工作区（无子目录），组序 shift 后 [0] 不再是 pi-gui 根（2026-10-08 无头轮实测踩中）
-  const gA = groups().find((g) => (wsOf(g)?.cwd ?? "").toLowerCase() === "e:\\pi-gui") ?? groups()[0];
+  const gA = groups().find((g) => (wsOf(g)?.cwd ?? "").toLowerCase() === "__REPO_ROOT_LOWER__") ?? groups()[0];
   const gB = groups().find((g) => g !== gA);
   const A = wsOf(gA), B = wsOf(gB);
   if ((await window.pi.getState()).cwd !== A.cwd) {
@@ -134,9 +137,9 @@ const CHECK = String.raw`
   R.activeIsB = gB.classList.contains("active") && !gA.classList.contains("active");
   R.leftSync = [...document.querySelectorAll("#ws-groups .ws-group")].some((g) => g.dataset.wsId === String(B.id) && g.classList.contains("active"));
 
-  // ④b 子目录右键「在此目录开新会话」：未登记目录自动登记为工作区（用 E:\pi-gui\renderer 确定性子目录；登记触发整树重建）
+  // ④b 子目录右键「在此目录开新会话」：未登记目录自动登记为工作区（用 <repo-root>\renderer 确定性子目录；登记触发整树重建）
   {
-    const ROOT2 = "E:\\pi-gui";
+    const ROOT2 = "__REPO_ROOT__";
     const gRoot = groups().find((g) => g.dataset.cwd === ROOT2);
     R.subRootThere = !!gRoot;
     if (gRoot) {
@@ -212,7 +215,10 @@ async function main() {
   });
   for (let i = 0; i < 30; i++) { if (await call("window.pi ? 'ready' : 'no'", false) === "ready") break; await sleep(1000); }
   await sleep(2500);
-  const raw = await call(CHECK, true);
+  const expression = CHECK
+    .replaceAll("__REPO_ROOT_LOWER__", REPO_ROOT.toLowerCase().replaceAll("\\", "\\\\"))
+    .replaceAll("__REPO_ROOT__", REPO_ROOT.replaceAll("\\", "\\\\"));
+  const raw = await call(expression, true);
   if (raw === undefined) { console.log("❌ evaluate 返回 undefined（页面脚本异常）"); process.exit(1); }
   console.log("RESULT:", raw);
   let r;

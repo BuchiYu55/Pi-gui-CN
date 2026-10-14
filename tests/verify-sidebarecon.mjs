@@ -2,7 +2,8 @@ import { spawn, execFileSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
 import fs from "node:fs";
-const ROOT = "E:/pi-gui";
+import { fileURLToPath } from "node:url";
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function waitCDP(port) {
   for (let i = 0; i < 40; i++) {

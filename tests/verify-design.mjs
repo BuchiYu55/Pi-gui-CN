@@ -8,6 +8,9 @@
  * ⑩ 窗口首次启动最大化 + window-state.json 落盘
  * 全程不发 prompt，零 token。用法：PI_GUI_CDP_PORT=9231 [PI_GUI_USER_DATA=...] node verify-design.mjs 9231
  */
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PORT = process.argv[2] || "9231";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -67,9 +70,9 @@ const CHECK = String.raw`
     }
     return q(".vw-tab.active .vw-name")?.textContent === name;
   };
-  const ROOT = "E:\\pi-gui";
+  const ROOT = "__REPO_ROOT__";
 
-  // 准备：全新 userData 首启会把主目录登记为首个工作区（既有行为）；确保 E:\pi-gui 在树里；
+  // 准备：全新 userData 首启会把主目录登记为首个工作区（既有行为）；确保仓库根目录在树里；
   // 清掉前次运行残留的收藏根（僵尸脚本遗留），一律经真实 UI 路径触发重建
   let cfg0 = await window.pi.wsList();
   let rebuilt = false;
@@ -198,7 +201,7 @@ const CHECK = String.raw`
   $("input").value = "";
   dbl(rowByPath(ROOT + "\\README.md"));
   await sleep(500);
-  R.dblOneRef = (($("input").value || "").match(/@/g) || []).length === 1 && ($("input").value || "").startsWith("@E:\\pi-gui\\README.md");
+  R.dblOneRef = (($("input").value || "").match(/@/g) || []).length === 1 && ($("input").value || "").startsWith("@<repo-root>\\README.md");
   R.dblNoViewer = tabNames().length === 0;
   $("input").value = "";
 
@@ -210,7 +213,7 @@ const CHECK = String.raw`
   R.fileMenuHas = ["引用", "复制路径", "系统打开", "在树中定位"].every((t) => qa(".ctx-menu .ctx-item").some((b) => b.textContent.includes(t)));
   qa(".ctx-menu .ctx-item")[0].click(); // @ 引用：输入框应被插入
   await sleep(200);
-  R.atInsert = ($("input").value || "").startsWith("@E:\\pi-gui\\README.md");
+  R.atInsert = ($("input").value || "").startsWith("@<repo-root>\\README.md");
   $("input").value = "";
 
   // 根右键：6 色板 + 换色生效（基准 indigo → 换 cinnabar → 还原）
@@ -449,7 +452,8 @@ async function main() {
   });
   for (let i = 0; i < 30; i++) { if (await call("window.pi ? 'ready' : 'no'", false) === "ready") break; await sleep(1000); }
   await sleep(2500);
-  const raw = await call(CHECK, true);
+  const expression = CHECK.replaceAll("__REPO_ROOT__", REPO_ROOT.replaceAll("\\", "\\\\"));
+  const raw = await call(expression, true);
   if (raw === undefined) { console.log("❌ evaluate 返回 undefined（页面脚本异常）"); process.exit(1); }
   const r = JSON.parse(raw);
   console.log("RESULT:", raw);
