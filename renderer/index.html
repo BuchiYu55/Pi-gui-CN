@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#faf8f4" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' file:; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; font-src 'self' file:; script-src 'self' file:" />
+  <title>Pi 桌面版</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 内联 SVG 图标库：<symbol> 定义，<use> 引用，随 currentColor 变色 -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+      <symbol id="i-clip" viewBox="0 0 24 24"><path d="M21.4 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.2-9.19a4 4 0 0 1 5.65 5.66L9.4 17.4a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/></symbol>
+      <symbol id="i-plan" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></symbol>
+      <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M9.4 9.2a2.7 2.7 0 0 1 5.3.7c0 1.8-2.7 2.3-2.7 4"/><circle cx="12" cy="17.8" r=".4"/></symbol>
+      <symbol id="i-send" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+      <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+      <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+      <symbol id="i-todo" viewBox="0 0 24 24"><path d="M4 5.5l2 2 3.5-3.5"/><path d="M4 15.5l2 2 3.5-3.5"/><path d="M13 6.5h8"/><path d="M13 16.5h8"/></symbol>
+      <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+      <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+      <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.8l2.9 5.9 6.5 1-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5-4.7-4.6 6.5-1z"/></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></symbol>
+      <symbol id="i-folder-open" viewBox="0 0 24 24"><path d="M6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></symbol>
+      <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-graph" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="7" r="2.4"/><circle cx="11" cy="17" r="2.4"/><path d="M8.1 7.2l7-0.9M7 8.3l3 6.4M16.7 9.2l-4.3 5.8"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></symbol>
+      <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="2.4"/></symbol>
+    </defs>
+  </svg>
+
+  <div id="app">
+    <!-- 左：侧栏（2026-10-05 重排：底部只留 设置|归档 + 智谱微条；git/工作区上下文移入 composer 卡片首行） -->
+    <aside id="sidebar">
+      <div class="logo-row">
+        <div class="logo">pi<span class="logo-dot">.</span></div>
+        <!-- 更新提示胶囊（2026-10-08）：主进程 npm 检测到新版时出现，点击复制升级命令 -->
+        <button id="update-pill" class="update-pill hidden" title="pi 有新版本，点击复制升级命令（需重启 GUI 生效）">
+          <svg class="ic ic-s"><use href="#i-download"/></svg><span class="update-pill-ver">–</span>
+        </button>
+      </div>
+
+      <!-- 会话搜索浮层（锚侧栏顶部；2026-10-05 owner 拍板方案⑤） -->
+      <div id="search-pop" class="search-pop hidden">
+        <div class="sp-input-wrap">
+          <svg class="ic ic-s"><use href="#i-search"/></svg>
+          <input id="sp-input" placeholder="搜索会话名…" spellcheck="false" />
+        </div>
+        <div id="sp-list" class="sp-list" role="listbox" aria-label="搜索结果"></div>
+      </div>
+
+      <div class="top-actions">
+        <button id="btn-new-session" class="btn-new-session" title="开新自由会话（不属于任何工作区，目录为主目录）；工作区内新增请用分组标题行的 +">
+          <svg class="ic ic-s"><use href="#i-pencil"/></svg>新会话
+        </button>
+        <!-- 浏览器全局入口（2026-10-12 owner 需求：查看器未开时壳内 🌐 钮不可见，主界面零浏览器入口）：
+             常驻侧栏顶排，行为与查看器内 🌐 同源（开壳+弹地址条） -->
+        <button id="btn-web-open" class="btn-search" title="打开网页（自由浏览器面板）" aria-label="打开网页">
+          <svg class="ic"><use href="#i-external"/></svg>
+        </button>
+        <button id="btn-search" class="btn-search" title="搜索会话（全部工作区 + 自由会话，Ctrl+K）" aria-label="搜索会话 (Ctrl+K)">
+          <svg class="ic"><use href="#i-search"/></svg>
+        </button>
+      </div>
+
+      <div id="ws-groups" class="ws-groups grow fade-y"></div>
+
+      <!-- 自由会话固定区（不属于任何工作区，cwd=主目录；2026-10-03 owner 需求） -->
+      <div id="free-sessions" class="free-sessions hidden"></div>
+
+      <div id="branch-list" class="branch-list hidden"></div>
+
+      <div class="side-footer">
+        <div class="footer-line-row foot-row-1">
+          <button id="btn-settings" class="footer-line grow" title="设置（模型 / Skills / MCP / 扩展社区）">
+            <svg class="ic ic-s"><use href="#i-gear"/></svg>
+            <span class="footer-text">设置</span>
+          </button>
+          <button id="btn-toggle-archived" class="footer-link hidden" title="查看已归档会话">已归档</button>
+        </div>
+        <button id="footer-zai" class="footer-line" title="智谱 GLM Coding 套餐用量（点击打开官方用量页）">
+          <span id="footer-zai-text" class="footer-text"></span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- 中：主区（2026-10-06 设计轮：行向分栏——聊天列 | 拖条 | 文件查看器） -->
+    <main id="main">
+      <button id="btn-show-rightbar" class="float-btn hidden" title="展开侧面板" aria-label="展开侧面板">
+        <svg class="ic ic-s" style="transform:rotate(180deg)"><use href="#i-chev-r"/></svg>
+      </button>
+
+      <div id="main-col">
+      <div id="chat" class="chat">
+        <div id="welcome" class="welcome">
+          <div class="welcome-logo">pi<span>.</span></div>
+        </div>
+      </div>
+
+      <div id="notice" class="notice hidden"></div>
+
+      <div id="composer" class="composer">
+        <div class="comp-card">
+          <div id="slash-menu" class="slash-menu hidden"></div>
+          <!-- 上下文条：当前会话的工作区 + git 状态（2026-10-05 owner 拍板：从侧栏底部移入，语义=发任务前先知道自己在哪） -->
+          <button id="ctx-bar" class="ctx-bar hidden" title="">
+            <svg class="ic ic-s"><use id="ctx-icon" href="#i-folder"/></svg>
+            <span id="ctx-ws" class="ctx-ws"></span>
+            <span id="ctx-git" class="ctx-git"></span>
+          </button>
+          <div id="attachments" class="attachments hidden"></div>
+          <button id="ask-bar" class="ask-bar hidden" title="点击滚动定位待答问题（对话内卡片，不遮挡对话）">
+            <svg class="ic ic-s"><use href="#i-help"/></svg>
+            <span>有待回答的问题…（点击定位）</span>
+          </button>
+          <textarea id="input" rows="2"
+                    placeholder="输入任务…（Enter 发送，Shift+Enter 换行，/ 唤起命令，可直接粘贴截图）"
+                    spellcheck="false"></textarea>
+          <div class="composer-bar">
+            <div class="composer-left">
+              <button id="perm-pill" class="perm-pill default" title="权限档位（当前会话）：默认 — 白名单内放行，越界弹窗">
+                <svg class="ic ic-s"><use id="perm-pill-icon" href="#i-shield"/></svg>
+                <span id="perm-pill-text">默认</span>
+                <svg class="ic ic-s perm-chev"><use href="#i-chev-d"/></svg>
+              </button>
+              <span id="status-dot" class="st-dot idle"></span>
+              <span id="status-state" class="composer-state">空闲</span>
+              <div id="scene-seg" class="scene-seg" role="group" aria-label="场景档位：一键切换模型与思考强度">
+                <button type="button" class="scene-btn" data-scene="work" title="工作：GLM-5.3 + 思考:高（默认档）">工作</button>
+                <button type="button" class="scene-btn" data-scene="deep" title="深想：GLM-5.3 + 思考:最大">深想</button>
+                <button type="button" class="scene-btn" data-scene="chat" title="日常：GLM-5.3-Flash + 思考:低">日常</button>
+                <button type="button" class="scene-btn scene-custom" data-scene="_custom" title="自定义模型/思考组合——点击打开设置中心调整" hidden>自定</button>
+              </div>
+            </div>
+            <div class="composer-right">
+              <span id="ctx-ring" class="ctx-ring hidden" title="">
+                <svg viewBox="0 0 16 16" width="14" height="14">
+                  <circle class="cr-track" cx="8" cy="8" r="6"/>
+                  <circle class="cr-prog" cx="8" cy="8" r="6"/>
+                </svg>
+                <span class="cr-num"></span>
+              </span>
+              <button id="btn-attach" class="icon-btn" title="添加图片附件" aria-label="添加图片附件">
+                <svg class="ic"><use href="#i-clip"/></svg>
+              </button>
+              <input type="file" id="file-input" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
+              <button id="btn-send" class="btn btn-primary send-btn" title="发送 (Enter)">
+                发送<svg class="ic ic-s"><use href="#i-send"/></svg>
+              </button>
+          <button id="btn-abort" class="btn btn-danger hidden" title="停止当前任务">
+            <svg class="ic ic-s"><use href="#i-stop"/></svg>停止
+          </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- 拖条：调整聊天/查看器比例（聊天最小 420px） -->
+      <div id="viewer-split" class="viewer-split hidden" title="拖动调整比例"></div>
+
+      <!-- 文件查看器（多 tab，只读；文本高亮/图片/HTML·md 渲染⇄源码；web tab=自由浏览器，阶段二） -->
+      <section id="viewer" class="viewer hidden" aria-label="文件查看器">
+        <div class="vw-tabs-row">
+          <div id="vw-tabs" class="vw-tabs" role="tablist"></div>
+          <!-- 🌐 新网页（2026-10-08 owner 报「自由浏览器在哪」补零门槛入口）：点开地址输入条，回车开 web tab；
+               无 web tab 也在场（查看器未开时随按钮打开），Esc/失焦收起 -->
+          <button id="btn-web-new" class="vw-web-new hidden" title="打开网页（浏览器面板新 tab）" aria-label="打开网页">
+            <svg class="ic ic-s"><use href="#i-external"/></svg><span>网页</span>
+          </button>
+          <input id="web-new-input" class="vw-web-new-input hidden" placeholder="输入网址，回车打开（Esc 取消）" spellcheck="false" />
+          <button id="vw-close" class="icon-btn" title="关闭查看器（Esc 关当前 tab）" aria-label="关闭查看器">✕</button>
+        </div>
+        <div id="vw-body" class="vw-body"></div>
+      </section>
+    </main>
+
+    <!-- 右栏拖条（2026-10-08 计划书阶段一）：拖动调整右栏宽度，260–520px 记忆 -->
+    <div id="rightbar-split" class="rightbar-split" title="拖动调整右栏宽度"></div>
+
+    <!-- 右：上下文面板（纵向三分） -->
+    <aside id="rightbar">
+      <div class="rightbar-head">
+        <span class="rightbar-title">上下文面板</span>
+        <button id="btn-hide-rightbar" class="icon-btn" title="折叠面板" aria-label="折叠侧面板">
+          <svg class="ic ic-s"><use href="#i-chev-r"/></svg>
+        </button>
+      </div>
+
+      <!-- 任务清单：渲染 rpiv-todo 的 todo 工具快照（2026-10-05 建，同日自 composer 悬浮面板
+           迁入右栏，替换原决策树占位 pane——tree-view 自建成无代码写入，grill-me 已走 / 菜单） -->
+      <section class="pane pane-todo todo-panel" id="todo-panel">
+        <button id="todo-head" class="pane-head todo-head" aria-expanded="true" aria-controls="todo-body" title="折叠/展开任务清单">
+          <svg class="ic ic-s pane-ic"><use href="#i-todo"/></svg><span id="todo-title">任务清单</span>
+          <span id="todo-count" class="todo-count hidden"></span>
+          <svg class="ic ic-s todo-chev"><use href="#i-chev-d"/></svg>
+        </button>
+        <div class="pane-body">
+          <div id="todo-body" class="todo-body" role="list"></div>
+        </div>
+      </section>
+
+      <!-- 子代理任务面板已删（2026-10-08 owner 拍板：非刚需且挤占右栏；spawn_subagent 工具与 fan-out/readOnly 参数保留，结果照回对话） -->
+
+      <section class="pane pane-files">
+        <div class="pane-head pane-head-files" title="全部工作区结构树：点项目名切换工作区（无会话不自动新建），箭头展开目录，文件单击查看、双击 @ 引用，右键更多（开新会话/收藏/换色）">
+          <svg class="ic ic-s pane-ic"><use href="#i-folder"/></svg><span>项目</span>
+          <span class="spacer"></span>
+          <button id="btn-tree-graph" class="mini-ic" title="知识图谱：工作区会话看本工作区 wiki 双链图，自由会话看全部工作区聚合总图（再点切回文件树）" aria-label="知识图谱">
+            <svg class="ic"><use href="#i-graph"/></svg>
+          </button>
+          <button id="btn-tree-filter" class="mini-ic" title="过滤文件名（含未展开目录）" aria-label="过滤">
+            <svg class="ic"><use href="#i-filter"/></svg>
+          </button>
+          <button id="btn-tree-fav" class="mini-ic" title="添加收藏目录（纯浏览定位，不建会话）" aria-label="添加收藏目录">
+            <svg class="ic"><use href="#i-plus"/></svg>
+          </button>
+        </div>
+        <div id="tree-filter-row" class="tree-filter-row hidden">
+          <input id="tree-filter-input" placeholder="输入关键字过滤文件…" spellcheck="false" />
+          <button id="btn-tree-hidden" class="mini-ic" title="显示/隐藏：点开头、node_modules 等隐藏项" aria-label="显示隐藏文件">
+            <svg class="ic"><use href="#i-eye"/></svg>
+          </button>
+        </div>
+        <div class="pane-body">
+          <div id="file-tree" class="file-tree"></div>
+          <div id="tree-results" class="tree-results hidden"></div>
+          <div id="wiki-graph-wrap" class="wiki-graph-wrap hidden">
+            <canvas id="wiki-graph"></canvas>
+            <div id="wiki-graph-empty" class="pane-empty hidden"></div>
+            <!-- 图谱工具条（2026-10-08 阶段一）：fit 复位 + 缩放指示 -->
+            <div id="graph-tools" class="graph-tools">
+              <span id="graph-zoom" class="graph-zoom" title="当前缩放比例">100%</span>
+              <button id="btn-graph-fit" class="mini-ic" title="适配视图（缩放平移复位到全部节点可见）" aria-label="适配视图">
+                <svg class="ic"><use href="#i-locate"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 随手问：辅助对话 pane（2026-10-08 计划书阶段三）：每工作区独立小会话，
+           默认 noTools + jev/auto 低成本路由；「附上下文」带主对话最近内容切片（4K 封顶取尾部）。
+           右栏准入规则：持续上下文类内容进右栏（AGENTS 待办区成文）。 -->
+      <section class="pane pane-aux" id="aux-pane">
+        <button id="aux-head" class="pane-head aux-head" aria-expanded="true" aria-controls="aux-body" title="折叠/展开随手问">
+          <svg class="ic ic-s pane-ic"><use href="#i-help"/></svg><span>随手问</span>
+          <svg class="ic ic-s todo-chev"><use href="#i-chev-d"/></svg>
+        </button>
+        <div id="aux-body" class="pane-body aux-body">
+          <div id="aux-msgs" class="aux-msgs"></div>
+          <div class="aux-input-row">
+            <label class="aux-ctx" title="附带主对话最近内容作为背景（4K 字符封顶，不写回主对话）">
+              <input type="checkbox" id="aux-ctx-on">附上下文
+            </label>
+            <input id="aux-input" placeholder="顺手问一句…" spellcheck="false" />
+            <button id="aux-send" class="mini-ic" title="发送 (Enter)" aria-label="发送随手问">
+              <svg class="ic"><use href="#i-send"/></svg>
+            </button>
+            <button id="aux-stop" class="mini-ic hidden" title="停止" aria-label="停止随手问">
+              <svg class="ic"><use href="#i-stop"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- 右键菜单（树/查看器共用，2026-10-06 设计轮） -->
+  <div id="ctx-menu" class="ctx-menu hidden" role="menu"></div>
+
+  <!-- 设置中心（2026-10-04 R1：扩展社区；R2 预留 skills/mcp/models/appearance） -->
+  <div id="settings-overlay" class="st-overlay hidden">
+    <div class="st-modal" role="dialog" aria-label="设置">
+      <aside class="st-side">
+        <div class="st-side-title">设置</div>
+        <nav class="st-nav">
+          <button class="st-nav-item" data-tab="ext">扩展社区</button>
+          <button class="st-nav-item" data-tab="skills">技能 Skills</button>
+          <button class="st-nav-item" data-tab="mcp">MCP 插件</button>
+          <button class="st-nav-item" data-tab="models">模型与提供商</button>
+          <button class="st-nav-item" data-tab="agent">代理</button>
+          <button class="st-nav-item" data-tab="appearance">外观</button>
+          <button class="st-nav-item" data-tab="logs">日志</button>
+        </nav>
+        <div class="st-side-foot"><span id="st-installed-count"></span></div>
+      </aside>
+      <div class="st-main">
+        <div class="st-tab" id="st-tab-ext">
+          <div class="st-weekly-head">
+            <span>本周精选</span>
+            <span id="st-weekly-sub" class="st-weekly-sub">双源榜单：pi.dev 社区热度×本周新发 + GitHub 高星，按契合度加权</span>
+            <button id="st-weekly-refresh" class="st-act" title="立即刷新本周榜单">刷新</button>
+          </div>
+          <div class="st-weekly" id="st-weekly"><div class="pane-empty">本周榜单加载中…</div></div>
+          <div class="st-toolbar">
+            <div class="st-search-wrap">
+              <svg class="ic ic-s"><use href="#i-tool"/></svg>
+              <input id="st-search" placeholder="搜索 pi.dev 社区包（名称 / 描述 / 作者）…" spellcheck="false" />
+            </div>
+            <div class="st-chips" id="st-chips">
+              <button class="chip active" data-type="">全部</button>
+              <button class="chip" data-type="extension">扩展</button>
+              <button class="chip" data-type="skill">技能</button>
+              <button class="chip" data-type="prompt">模板</button>
+              <button class="chip" data-type="theme">主题</button>
+            </div>
+          </div>
+          <div class="st-hint">来自 pi.dev 社区目录（npm 包，带 pi-package 标记）。安装前请自行审阅包源码——扩展会在会话中执行代码。</div>
+          <div class="st-list" id="st-catalog"><div class="pane-empty">加载中…</div></div>
+          <div class="st-more-row">
+            <button id="st-more" class="btn hidden">加载更多</button>
+          </div>
+        </div>
+        <div class="st-tab hidden" id="st-tab-skills">
+          <div class="st-tab-title">已加载技能</div>
+          <div class="st-hint">来自 <span class="mono-path">~/.pi/agent/skills</span>（用户级）与项目 <span class="mono-path">.pi/skills</span>（项目级）。要装新技能，去「扩展社区」筛选“技能”。</div>
+          <div class="st-list" id="st-skills-list"><div class="pane-empty">加载中…</div></div>
+        </div>
+        <div class="st-tab hidden" id="st-tab-mcp">
+          <div class="st-tab-title">MCP 服务器</div>
+          <div class="st-hint">配置读写 <span class="mono-path">~/.pi/agent/mcp.json</span>；工具是否已挂载以当前会话实时状态为准。表单仅编辑全局配置，项目级请在仓库 <span class="mono-path">.pi/mcp.json</span> 手改；保存后空闲会话自动热重载，运行中会话新建后生效。</div>
+          <div class="st-actions-bar">
+            <button id="st-mcp-add" class="btn btn-sm btn-primary">＋ 新增服务器</button>
+            <span class="st-toolbar-note">仅全局可表单编辑</span>
+          </div>
+          <div class="st-list" id="st-mcp-list"><div class="pane-empty">加载中…</div></div>
+          <div id="st-mcp-form" class="st-mcp-form st-form-view">
+            <div class="st-form-title" id="st-mcp-form-title">新增服务器</div>
+            <label class="st-f">名称<input id="st-mf-name" placeholder="如 my-server（字母数字._-，不含双下划线）" spellcheck="false"></label>
+            <label class="st-f">类型
+              <select id="st-mf-type">
+                <option value="stdio">stdio（本地命令）</option>
+                <option value="url">url（HTTP 远程）</option>
+              </select>
+            </label>
+            <div id="st-mf-stdio-wrap">
+              <label class="st-f">command<input id="st-mf-command" placeholder="如 npx" spellcheck="false"></label>
+              <label class="st-f">args（每行一个）<textarea id="st-mf-args" rows="3" spellcheck="false"></textarea></label>
+              <label class="st-f">env（每行 KEY=value，值支持 ${VAR} 环境变量引用）<textarea id="st-mf-env" rows="3" spellcheck="false"></textarea></label>
+            </div>
+            <div id="st-mf-url-wrap" class="hidden">
+              <label class="st-f">url<input id="st-mf-url" placeholder="https://…/mcp" spellcheck="false"></label>
+              <label class="st-f">headers（每行 KEY=value，值支持 ${VAR} 引用）<textarea id="st-mf-headers" rows="3" spellcheck="false"></textarea></label>
+            </div>
+            <label class="st-f">描述（可选）<input id="st-mf-desc" spellcheck="false"></label>
+            <label class="st-f">挂载方式
+              <select id="st-mf-exposure">
+                <option value="deferred">按需（tool_search 检索后加载）</option>
+                <option value="direct">常驻（直接挂载全部工具）</option>
+                <option value="codemode">codemode（非 LLM 脚本专用，高级）</option>
+              </select>
+            </label>
+            <label class="st-f st-f-check"><input type="checkbox" id="st-mf-enabled" checked> 启用</label>
+            <div class="st-form-actions">
+              <button id="st-mf-save" class="btn btn-sm btn-primary">保存</button>
+              <button id="st-mf-cancel" class="btn btn-sm">取消</button>
+            </div>
+          </div>
+          <div class="st-foot-row">
+            <button id="st-mcp-open" class="btn btn-sm">打开 mcp.json</button>
+          </div>
+        </div>
+        <div class="st-tab hidden" id="st-tab-models">
+          <div class="st-tab-title">可用模型</div>
+          <div class="st-hint">点击切换当前会话模型。列表来自已接入的提供商（模型目录）。自定义提供商写入 <span class="mono-path">~/.pi/agent/models.json</span>，高级字段（compat/headers/modelOverrides）请手编文件。</div>
+          <div class="st-list" id="st-models-list"></div>
+          <div class="st-group-head">自定义提供商</div>
+          <div class="st-actions-bar">
+            <button id="st-prov-add" class="btn btn-sm btn-primary">＋ 自定义提供商</button>
+            <button id="st-prov-open" class="btn btn-sm">打开 models.json</button>
+            <span class="st-toolbar-note">兼容端点接入（Ollama / LM Studio / vLLM / 代理）</span>
+          </div>
+          <div class="st-list st-prov-scroll" id="st-prov-list"><div class="pane-empty">加载中…</div></div>
+          <div class="st-vision-row">
+            <label class="st-f-check" style="flex:none"><input type="checkbox" id="st-vision-on"> 图片任务自动切换视觉模型</label>
+            <select id="st-vision-target" class="mini-select" title="视觉目标模型（仅列支持图片输入的模型）"></select>
+          </div>
+          <div id="st-prov-form" class="st-mcp-form st-form-view">
+            <div class="st-form-title" id="st-prov-form-title">新增提供商</div>
+            <label class="st-f">名称（key）<input id="st-pf-name" placeholder="如 ollama（字母数字._-）" spellcheck="false"></label>
+            <label class="st-f">显示名（可选）<input id="st-pf-display" spellcheck="false"></label>
+            <label class="st-f">API 类型
+              <select id="st-pf-api">
+                <option value="openai-completions">openai-completions（OpenAI 兼容，推荐）</option>
+                <option value="openai-responses">openai-responses（OpenAI Responses）</option>
+                <option value="anthropic-messages">anthropic-messages（Anthropic 兼容）</option>
+                <option value="google-generative-ai">google-generative-ai</option>
+                <option value="azure-openai-responses">azure-openai-responses</option>
+                <option value="openai-codex-responses">openai-codex-responses</option>
+                <option value="google-vertex">google-vertex</option>
+                <option value="pi-messages">pi-messages</option>
+              </select>
+            </label>
+            <label class="st-f">baseUrl<input id="st-pf-baseurl" placeholder="http://localhost:11434/v1" spellcheck="false"></label>
+            <label class="st-f">apiKey（支持 ${VAR} / $VAR / !command；建议 ${VAR} 避免明文落盘）<input id="st-pf-apikey" spellcheck="false"></label>
+            <label class="st-f">模型列表（每行：id 或 id|显示名|contextWindow）<textarea id="st-pf-models" rows="3" spellcheck="false"></textarea></label>
+            <div class="st-form-actions">
+              <button id="st-pf-save" class="btn btn-sm btn-primary">保存</button>
+              <button id="st-pf-cancel" class="btn btn-sm">取消</button>
+            </div>
+          </div>
+        </div>
+        <div class="st-tab hidden" id="st-tab-agent">
+          <div class="st-tab-title">代理行为</div>
+          <div class="st-hint">权限 / 思考 / 压缩为全局默认，新会话生效（当前会话不动）；压缩激进档上下文剪得更早。通知作用于 pi 的任务完成与提问提醒；auto 路由会话的思考档由路由决定，此默认对直连模型生效。</div>
+          <div class="st-list" id="st-agent"><div class="pane-empty">加载中…</div></div>
+        </div>
+        <div class="st-tab hidden" id="st-tab-appearance">
+          <div class="st-tab-title">外观</div>
+          <div id="st-appearance"></div>
+        </div>
+        <div class="st-tab hidden" id="st-tab-logs">
+          <div class="st-tab-title">日志</div>
+          <div class="st-hint">运行异常记录（run.err.log，原启动顶部提醒条迁入）。查看或标记已读后不再提醒；新异常会重新落盘。会话数据不受异常影响。</div>
+          <div id="st-logs"><div class="pane-empty">加载中…</div></div>
+        </div>
+      </div>
+      <button id="st-close" class="icon-btn st-close" title="关闭" aria-label="关闭设置">✕</button>
+    </div>
+  </div>
+
+  <!-- 双模型对比弹窗 -->
+  <div id="cmp-overlay" class="cmp-overlay hidden">    <div class="cmp-modal">      <div class="cmp-head">
+        <span>双模型同题对比</span>
+        <button id="cmp-close" class="icon-btn" title="关闭（运行中则中止）">✕</button>
+      </div>
+      <div class="cmp-config">
+        <select id="cmp-model-a" class="select"></select>
+        <span class="cmp-vs">VS</span>
+        <select id="cmp-model-b" class="select"></select>
+      </div>
+      <textarea id="cmp-question" rows="3" placeholder="同一问题分别发给两个模型（纯文本，不带工具）…"></textarea>
+      <div class="cmp-runrow">
+        <button id="cmp-run" class="btn btn-primary">开始对比</button>
+        <span id="cmp-status" class="cmp-status"></span>
+      </div>
+      <div id="cmp-grid" class="cmp-grid hidden">
+        <div class="cmp-col" id="cmp-col-a">
+          <div class="cmp-col-head"><b>A</b><span id="cmp-meta-a"></span></div>
+          <div class="cmp-col-body" id="cmp-body-a"></div>
+        </div>
+        <div class="cmp-col" id="cmp-col-b">
+          <div class="cmp-col-head"><b>B</b><span id="cmp-meta-b"></span></div>
+          <div class="cmp-col-body" id="cmp-body-b"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 引导向导（2026-10-12 开源阶段 1：首启动配置环境，交互稿 design/onboarding-wizard-20261012.html） -->
+  <div id="onboard-overlay" class="ob-overlay hidden" role="dialog" aria-label="配置引导">
+    <div class="ob-modal">
+      <div class="ob-steps">
+        <div class="ob-step" data-s="1"><span class="ob-dot">1</span><span class="ob-lb">欢迎</span></div><span class="ob-bar" data-b="1"></span>
+        <div class="ob-step" data-s="2"><span class="ob-dot">2</span><span class="ob-lb">选服务商</span></div><span class="ob-bar" data-b="2"></span>
+        <div class="ob-step" data-s="3"><span class="ob-dot">3</span><span class="ob-lb">获取 Key</span></div><span class="ob-bar" data-b="3"></span>
+        <div class="ob-step" data-s="4"><span class="ob-dot">4</span><span class="ob-lb">验证连通</span></div><span class="ob-bar" data-b="4"></span>
+        <div class="ob-step" data-s="5"><span class="ob-dot">5</span><span class="ob-lb">选模型</span></div>
+      </div>
+      <div class="ob-body">
+        <div id="ob-p1">
+          <div class="ob-seal">π</div>
+          <h1 class="ob-h1">欢迎使用 Pi 桌面版</h1>
+          <p class="ob-sub">开始前需要连接一个 AI 模型服务（自带 API Key，用多少付多少）。<br>整个过程约 2 分钟，配置随时可在设置中心修改。</p>
+          <div class="ob-feats">
+            <div class="ob-feat"><div class="ob-ft">🖥 本地优先</div><div class="ob-fd">会话与文件都在你自己的电脑上，不经过第三方服务器</div></div>
+            <div class="ob-feat"><div class="ob-ft">🔀 多模型切换</div><div class="ob-fd">一个界面随时切换智谱 / DeepSeek / Kimi / OpenRouter 等服务</div></div>
+            <div class="ob-feat"><div class="ob-ft">✅ 任务可视化</div><div class="ob-fd">文件树、任务清单、浏览器面板，coding agent 全程看得见</div></div>
+          </div>
+          <div class="ob-center"><button class="ob-btn ob-btn-pri ob-big" id="ob-start">开始配置 →</button></div>
+        </div>
+        <div id="ob-p2" class="hidden">
+          <h2 class="ob-h2">选择模型服务商</h2>
+          <p class="ob-h2sub">推荐国内服务商：人民币直付、无需外币信用卡。随时可以再添加其他家。</p>
+          <div class="ob-prov-grid" id="ob-prov-grid"></div>
+        </div>
+        <div id="ob-p3" class="hidden">
+          <h2 class="ob-h2" id="ob-p3-title">获取 API Key</h2>
+          <p class="ob-h2sub">按下面三步拿到密钥：</p>
+          <div class="ob-s3list" id="ob-s3list"></div>
+          <a class="ob-linkbtn" id="ob-reg-link" href="#" target="_blank" rel="noreferrer">↗ 打开注册页面</a>
+          <p class="ob-note">🔒 Key 只保存在你自己电脑的 <code>~/.pi/agent/models.json</code>，不会上传到任何地方。计费由服务商直接管理，本应用不经手任何费用。</p>
+        </div>
+        <div id="ob-p4" class="hidden">
+          <h2 class="ob-h2">粘贴 API Key 并验证</h2>
+          <p class="ob-h2sub">粘贴后点「测试连接」——只查询一次模型列表（零 token 消耗），不会产生费用。</p>
+          <div class="ob-custom-url hidden" id="ob-custom-url-row">
+            <label class="ob-lab" for="ob-baseurl">API 地址（OpenAI 兼容端点）</label>
+            <input id="ob-baseurl" type="text" placeholder="https://your-endpoint.example.com/v1" spellcheck="false">
+          </div>
+          <div class="ob-keyrow">
+            <div class="ob-keybox">
+              <input id="ob-keyinput" type="password" placeholder="在此粘贴 API Key…" spellcheck="false">
+              <span class="ob-eye" id="ob-eye" title="显示 / 隐藏">👁</span>
+            </div>
+            <button class="ob-btn ob-btn-pri" id="ob-testbtn">测试连接</button>
+          </div>
+          <div class="ob-testout" id="ob-testout"></div>
+          <p class="ob-note">💡 常见问题：Key 前后多了空格（自动去除）、账户欠费、服务商平台未开通对应模型。</p>
+        </div>
+        <div id="ob-p5" class="hidden">
+          <h2 class="ob-h2">选择默认模型</h2>
+          <p class="ob-h2sub">新会话将默认使用它。之后可随时在 设置 → 模型与提供商 里改。</p>
+          <div class="ob-modelist" id="ob-modelist"></div>
+        </div>
+        <div id="ob-p6" class="hidden">
+          <div class="ob-done">✓</div>
+          <h1 class="ob-h1" style="font-size:20px">配置完成！</h1>
+          <p class="ob-sub" id="ob-fin-sub" style="margin-bottom:6px"></p>
+          <div class="ob-center"><button class="ob-btn ob-btn-pri ob-big" id="ob-finish">进入 Pi 桌面版 →</button></div>
+          <p class="ob-finnote">配置已写入 ~/.pi/agent/（models.json + settings.json）· 免重启即时生效<br>场景三档（工作 / 深想 / 日常）已按此模型就绪，点击输入框下方即可切换</p>
+        </div>
+      </div>
+      <div class="ob-foot" id="ob-foot">
+        <span class="ob-skip" id="ob-skip">跳过，稍后在设置中配置 →</span>
+        <div class="ob-ops">
+          <button class="ob-btn ob-btn-sec hidden" id="ob-prev">← 上一步</button>
+          <button class="ob-btn ob-btn-pri hidden" id="ob-next">下一步 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.bundle.js"></script>
+</body>
+</html>

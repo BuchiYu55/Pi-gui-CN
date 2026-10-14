@@ -1,0 +1,17 @@
+node_modules/
+run.log
+renderer/app.bundle.js
+check.png
+check-b.png
+pi-gui-check.png
+run.err.log
+.obsidian/
+dist-out/
+dist-out2/
+
+release/
+dist-out/
+dist-out2/
+*.log
+.obsidian/
+AGENTS.md
