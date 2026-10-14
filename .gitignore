@@ -14,4 +14,5 @@ dist-out/
 dist-out2/
 *.log
 .obsidian/
-AGENTS.md
+
+# AGENTS.md is tracked: public AI install/use guide (see llms.txt)

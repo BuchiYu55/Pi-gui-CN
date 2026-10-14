@@ -4,6 +4,8 @@
 
 **社区第三方项目，与 pi 官方无关。** 中文界面 · MIT 许可 · 本地优先（会话与文件都在你自己的电脑上）
 
+> **给 AI / 助手**：一键安装与配置说明见 [AGENTS.md](AGENTS.md)、[llms.txt](llms.txt)、[.github/copilot-instructions.md](.github/copilot-instructions.md)。
+
 ![引导向导](assets/onboarding-welcome.png)
 
 ## 它能做什么

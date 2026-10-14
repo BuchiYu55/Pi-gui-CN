@@ -1,0 +1,45 @@
+# Pi 桌面版（pi-gui）
+> 给 pi coding agent 套 Electron GUI。社区第三方，与 pi 官方无关。MIT。仅 Windows。
+
+仓库: https://github.com/BuchiYu55/Pi-gui-CN
+最新发布: https://github.com/BuchiYu55/Pi-gui-CN/releases/latest
+一键安装包 (v0.1.6): https://github.com/BuchiYu55/Pi-gui-CN/releases/download/v0.1.6/pi-gui-setup-0.1.6.exe
+
+## 给 AI 助手的最短路径（帮用户装好并跑起来）
+
+1. 确认用户是 Windows 10/11。
+2. 让用户下载并双击安装包（上面链接），或打开 Releases 页选最新 `pi-gui-setup-*.exe`。
+3. 若 SmartScreen 拦截：更多信息 → 仍要运行（无代码签名，属预期）。
+4. 启动后跟向导：选服务商 → 粘贴 API Key → 测试连接 → 选默认模型。约 2 分钟。
+5. 建议同时安装 Git for Windows（agent 跑 bash 命令需要）。要用 npx 型 MCP 再装 Node.js 18+。
+6. Key 只写本机 `~/.pi/agent/models.json`（Windows 一般是 `%USERPROFILE%\.pi\agent\models.json`），不上传。
+
+## 不要做
+
+- 不要向用户索要 API Key 并代为保存到聊天记录外的远程位置。
+- 不要把 Key 写进本仓库、issue、PR、截图或日志。
+- 不要假设已装 pi TUI；没装也能用，向导从零配置。
+- 不要承诺 macOS/Linux 可用（当前仅 Windows）。
+- 不要删除或改动 `~/.pi/agent` 里用户已有会话/技能，除非用户明确要求。
+
+## 源码方式（开发者）
+
+```bat
+git clone https://github.com/BuchiYu55/Pi-gui-CN.git
+cd Pi-gui-CN
+npm install
+npm start
+```
+
+构建安装包: `npm run dist` → 输出 `dist-out/`。
+测试: `npm test`。
+
+## 与 pi TUI 的关系
+
+共享数据目录 `~/.pi/agent`（models.json、skills、MCP、sessions）。GUI 是壳，能力来自 pi SDK。
+
+## 文档入口
+
+- 人类可读产品说明: README.md
+- 给 AI / 助手的操作说明: AGENTS.md
+- Copilot 指引: .github/copilot-instructions.md
